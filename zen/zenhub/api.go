@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/eltorocorp/zencli/zen/github"
@@ -88,8 +87,6 @@ func (a *API) MovePipeline(issue int, pipelineID string) error {
 	if err != nil {
 		return err
 	}
-
-	log.Println(string(pipelineMoveJSON))
 
 	request.Body = ioutil.NopCloser(bytes.NewReader(pipelineMoveJSON))
 	request.Header.Add("X-Authentication-Token", a.zenHubAuthToken)

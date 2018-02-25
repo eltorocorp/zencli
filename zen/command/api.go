@@ -1,7 +1,6 @@
 package command
 
 import (
-	"log"
 	"strings"
 )
 
@@ -53,31 +52,30 @@ func (c *API) Execute() error {
 	if !c.nextSymbol() {
 		return c.parserError()
 	}
-	if c.acceptToken(DROP) &&
+	if c.expectToken(DROP) &&
 		c.nextSymbol() &&
 		c.expectCurrentSymbolInt(&issue) {
 		return c.actions.Drop(issue)
-	} else if c.acceptToken(LIST) {
+	} else if c.expectToken(LIST) {
 		backlog = false
 		for c.nextSymbol() {
-			if c.acceptToken(ONLY) &&
+			if c.expectToken(ONLY) &&
 				c.nextSymbol() &&
 				c.expectCurrentSymbolString(&login) {
 				continue
-			} else if c.acceptToken(BACKLOG) {
+			} else if c.expectToken(BACKLOG) {
 				backlog = true
 				continue
 			}
 			return c.parserError()
 		}
 		return c.actions.List(backlog, login)
-	} else if c.acceptToken(MOVE) &&
+	} else if c.expectToken(MOVE) &&
 		c.nextSymbol() &&
 		c.expectCurrentSymbolInt(&issue) &&
 		c.nextSymbol() &&
 		c.expectToken(TO) {
 		pipelineName := []string{}
-		log.Println(issue)
 		for c.nextSymbol() {
 			if c.expectCurrentSymbolString(&pipeline) {
 				pipelineName = append(pipelineName, pipeline)
@@ -86,7 +84,7 @@ func (c *API) Execute() error {
 			}
 		}
 		return c.actions.Move(issue, strings.Join(pipelineName, " "))
-	} else if c.acceptToken(PICK) &&
+	} else if c.expectToken(PICK) &&
 		c.nextSymbol() &&
 		c.expectToken(UP) &&
 		c.nextSymbol() &&

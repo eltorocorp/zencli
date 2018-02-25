@@ -23,7 +23,7 @@ func (c *API) acceptToken(t token) bool {
 		return true
 	}
 	for _, token := range tokens {
-		if t == token {
+		if c.currentSymbol == string(token) {
 			return false
 		}
 	}
