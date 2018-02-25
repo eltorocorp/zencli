@@ -220,6 +220,38 @@ func (a *API) CloseIssue(issue int) error {
 	return nil
 }
 
+// OpenIssue opens the specified issue.
+func (a *API) OpenIssue(issue int) error {
+	issueToClose := struct {
+		State string `json:"state"`
+	}{
+		State: "open",
+	}
+	issueToCloseJSON, err := json.Marshal(&issueToClose)
+	if err != nil {
+		return err
+	}
+
+	client := http.DefaultClient
+	getRepoURI := fmt.Sprintf("%v/repos/%v/%v/issues/%v?access_token=%v", githubRoot, a.ownerName, a.RepoName, issue, a.githubAuthToken)
+	request, err := createDefaultRequest(http.MethodPatch, getRepoURI)
+	if err != nil {
+		return err
+	}
+
+	request.Body = ioutil.NopCloser(bytes.NewReader(issueToCloseJSON))
+	response, err := client.Do(request)
+	if err != nil {
+		return err
+	}
+
+	if response.StatusCode != http.StatusOK {
+		return fmt.Errorf("the open issue endpoint returned %v", response.StatusCode)
+	}
+
+	return nil
+}
+
 func createDefaultRequest(method, uri string) (*http.Request, error) {
 	request, err := http.NewRequest(method, uri, nil)
 	if err != nil {

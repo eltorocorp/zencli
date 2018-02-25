@@ -127,7 +127,17 @@ func (a *Actions) Close(issue int) error {
 	fmt.Printf("Closing issue %v...\n", issue)
 	err := a.githubAPI.CloseIssue(issue)
 	if err == nil {
-		fmt.Printf("Issue %v has been closed.", issue)
+		fmt.Printf("Issue %v has been closed.\n", issue)
+	}
+	return err
+}
+
+// Open chages the status of the specified issue to open.
+func (a *Actions) Open(issue int) error {
+	fmt.Printf("Openning issue %v...\n", issue)
+	err := a.githubAPI.OpenIssue(issue)
+	if err == nil {
+		fmt.Printf("Issue %v has been openned.\n", issue)
 	}
 	return err
 }

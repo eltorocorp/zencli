@@ -16,6 +16,7 @@ type API struct {
 type Actions interface {
 	Help()
 	Close(issue int) error
+	Open(issue int) error
 	Drop(issue int) error
 	List(backlog bool, login string) error
 	Move(issue int, pipeline string) error
@@ -57,6 +58,10 @@ func (c *API) Execute() error {
 		c.nextSymbol() &&
 		c.expectCurrentSymbolInt(&issue) {
 		return c.actions.Close(issue)
+	} else if c.expectToken(OPEN) &&
+		c.nextSymbol() &&
+		c.expectCurrentSymbolInt(&issue) {
+		return c.actions.Open(issue)
 	} else if c.expectToken(DROP) &&
 		c.nextSymbol() &&
 		c.expectCurrentSymbolInt(&issue) {

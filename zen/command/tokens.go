@@ -5,6 +5,8 @@ type token string
 const (
 	// CLOSE token
 	CLOSE token = "close"
+	// OPEN token
+	OPEN token = "open"
 	// HELP token
 	HELP token = "help"
 	// DROP token
@@ -25,4 +27,4 @@ const (
 	UP token = "up"
 )
 
-var tokens = []token{CLOSE, HELP, DROP, LIST, BACKLOG, ONLY, MOVE, TO, PICK, UP}
+var tokens = []token{OPEN, CLOSE, HELP, DROP, LIST, BACKLOG, ONLY, MOVE, TO, PICK, UP}
