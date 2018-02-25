@@ -1,6 +1,11 @@
 # zencli
 A small utility for interacting with ZenHub boards through a simple command line interface.
 
+## Want to contribute?
+
+ - Awesome. Contributions are welcome!
+ - Please fork and submit a pull request with any changes that you think would be useful.
+
 ## Setup
 
 `zen` expects the following environment variables to be set:
@@ -8,6 +13,7 @@ A small utility for interacting with ZenHub boards through a simple command line
  - ZENCLI_ZENHUBAUTHTOKEN - https://dashboard.zenhub.io/#/settings
  - ZENCLI_REPOOWNER - The name of the organization that owns the repo (i.e. eltorocorp).
  - ZENCLI_REPONAME - The name of the default repo you are targetting. (i.e. zencli)
+ 
 ## To build and install from source:
 
 1. Clone the source to your working directory in your go path.
@@ -34,3 +40,7 @@ COMMANDS
     move <issue> to <pipeline>  Moves the specified issue from its current pipeline to the specified pipeline.
     pick up <issue>             Adds you as the assignee on the specified issue and removes any other assignees.
 ```
+
+## yeah, I know
+ - I know about the `flag` package. I wrote the custom parser for this just for the hell of it.
+ - I know there are github API wrappers out there already for Go. I wanted to keep things simple and avoid vendored dependencies.
