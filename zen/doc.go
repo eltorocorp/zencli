@@ -1,21 +1,6 @@
-# zencli
-A small utility for interacting with ZenHub boards through a simple command line interface.
+package main
 
-## Setup
-
-`zen` expects the following environment variables to be set:
- - ZENCLI_GITHUBAUTHTOKEN - https://github.com/settings/tokens Must have repo and user access.
- - ZENCLI_ZENHUBAUTHTOKEN - https://dashboard.zenhub.io/#/settings
- - ZENCLI_REPOOWNER - The name of the organization that owns the repo (i.e. eltorocorp).
- - ZENCLI_REPONAME - The name of the default repo you are targetting. (i.e. zencli)
-## To build and install from source:
-
-1. Clone the source to your working directory in your go path.
-1. $ cd [...]/zencli/zen
-1. $ go install
-1. $ zen help
-```
-NAME
+const usage = `NAME
     zen -- a small CLI for interacting with zenhub/github
 
 SYNOPSIS
@@ -33,4 +18,4 @@ COMMANDS
                                 When this option is supplied, unassigned issues are still displayed.
     move <issue> to <pipeline>  Moves the specified issue from its current pipeline to the specified pipeline.
     pick up <issue>             Adds you as the assignee on the specified issue and removes any other assignees.
-```
+`
