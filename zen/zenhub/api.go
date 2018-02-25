@@ -37,15 +37,12 @@ func (a *API) GetPipelines() (*Pipelines, error) {
 
 	client := http.DefaultClient
 	getPipelinesURI := fmt.Sprintf("%v/p1/repositories/%v/board", zenhubRoot, *repoID)
-	request, err := http.NewRequest(http.MethodGet, getPipelinesURI, nil)
-
+	request, err := a.createDefaultRequest(http.MethodGet, getPipelinesURI)
 	if err != nil {
 		return nil, err
 	}
 
-	request.Header.Add("X-Authentication-Token", a.zenHubAuthToken)
 	response, err := client.Do(request)
-
 	if err != nil {
 		return nil, err
 	}
@@ -83,14 +80,13 @@ func (a *API) MovePipeline(issue int, pipelineID string) error {
 
 	client := http.DefaultClient
 	getPipelinesURI := fmt.Sprintf("%v/p1/repositories/%v/issues/%v/moves", zenhubRoot, *repoID, issue)
-	request, err := http.NewRequest(http.MethodPost, getPipelinesURI, nil)
+	request, err := a.createDefaultRequest(http.MethodPost, getPipelinesURI)
 	if err != nil {
 		return err
 	}
 
-	request.Body = ioutil.NopCloser(bytes.NewReader(pipelineMoveJSON))
-	request.Header.Add("X-Authentication-Token", a.zenHubAuthToken)
 	request.Header.Add("Content-Type", "application/json")
+	request.Body = ioutil.NopCloser(bytes.NewReader(pipelineMoveJSON))
 	response, err := client.Do(request)
 
 	if err != nil {
@@ -101,4 +97,13 @@ func (a *API) MovePipeline(issue int, pipelineID string) error {
 		return fmt.Errorf("the move issue endpoint returned %v", response.StatusCode)
 	}
 	return nil
+}
+
+func (a *API) createDefaultRequest(method, uri string) (*http.Request, error) {
+	request, err := http.NewRequest(method, uri, nil)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Add("X-Authentication-Token", a.zenHubAuthToken)
+	return request, nil
 }

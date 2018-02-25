@@ -33,15 +33,12 @@ func New(githubAuthToken, repoName, ownerName string) *API {
 func (a *API) GetRepoID() (*int, error) {
 	client := http.DefaultClient
 	getRepoURI := fmt.Sprintf("%v/repos/%v/%v?access_token=%v", githubRoot, a.ownerName, a.RepoName, a.githubAuthToken)
-	request, err := http.NewRequest(http.MethodGet, getRepoURI, nil)
-
+	request, err := createDefaultRequest(http.MethodGet, getRepoURI)
 	if err != nil {
 		return nil, err
 	}
 
-	request.Header.Add("Accept", githubV3AcceptHeader)
 	response, err := client.Do(request)
-
 	if err != nil {
 		return nil, err
 	}
@@ -65,15 +62,12 @@ func (a *API) GetRepoID() (*int, error) {
 func (a *API) GetIssuesForRepo() (*[]*Issue, error) {
 	client := http.DefaultClient
 	getRepoURI := fmt.Sprintf("%v/repos/%v/%v/issues?access_token=%v", githubRoot, a.ownerName, a.RepoName, a.githubAuthToken)
-	request, err := http.NewRequest(http.MethodGet, getRepoURI, nil)
-
+	request, err := createDefaultRequest(http.MethodGet, getRepoURI)
 	if err != nil {
 		return nil, err
 	}
 
-	request.Header.Add("Accept", githubV3AcceptHeader)
 	response, err := client.Do(request)
-
 	if err != nil {
 		return nil, err
 	}
@@ -97,15 +91,13 @@ func (a *API) GetIssuesForRepo() (*[]*Issue, error) {
 func (a *API) GetAuthenticatedUser() (*User, error) {
 	client := http.DefaultClient
 	getRepoURI := fmt.Sprintf("%v/user?access_token=%v", githubRoot, a.githubAuthToken)
-	request, err := http.NewRequest(http.MethodGet, getRepoURI, nil)
+	request, err := createDefaultRequest(http.MethodGet, getRepoURI)
 
 	if err != nil {
 		return nil, err
 	}
 
-	request.Header.Add("Accept", githubV3AcceptHeader)
 	response, err := client.Do(request)
-
 	if err != nil {
 		return nil, err
 	}
@@ -143,10 +135,12 @@ func (a *API) RemoveAuthenticatedUserFromIssue(issue int) error {
 
 	client := http.DefaultClient
 	getRepoURI := fmt.Sprintf("%v/repos/%v/%v/issues/%v/assignees?access_token=%v", githubRoot, a.ownerName, a.RepoName, issue, a.githubAuthToken)
-	request, err := http.NewRequest(http.MethodDelete, getRepoURI, nil)
-	request.Body = ioutil.NopCloser(bytes.NewReader(assigneesJSON))
-	request.Header.Add("Accept", githubV3AcceptHeader)
+	request, err := createDefaultRequest(http.MethodDelete, getRepoURI)
+	if err != nil {
+		return err
+	}
 
+	request.Body = ioutil.NopCloser(bytes.NewReader(assigneesJSON))
 	response, err := client.Do(request)
 	if err != nil {
 		return err
@@ -176,10 +170,12 @@ func (a *API) AssignAuthenticatedUserToIssue(issue int) error {
 
 	client := http.DefaultClient
 	getRepoURI := fmt.Sprintf("%v/repos/%v/%v/issues/%v/assignees?access_token=%v", githubRoot, a.ownerName, a.RepoName, issue, a.githubAuthToken)
-	request, err := http.NewRequest(http.MethodPost, getRepoURI, nil)
-	request.Body = ioutil.NopCloser(bytes.NewReader(assigneesJSON))
-	request.Header.Add("Accept", githubV3AcceptHeader)
+	request, err := createDefaultRequest(http.MethodPost, getRepoURI)
+	if err != nil {
+		return err
+	}
 
+	request.Body = ioutil.NopCloser(bytes.NewReader(assigneesJSON))
 	response, err := client.Do(request)
 	if err != nil {
 		return err
@@ -190,4 +186,13 @@ func (a *API) AssignAuthenticatedUserToIssue(issue int) error {
 	}
 
 	return nil
+}
+
+func createDefaultRequest(method, uri string) (*http.Request, error) {
+	request, err := http.NewRequest(method, uri, nil)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Add("Accept", githubV3AcceptHeader)
+	return request, nil
 }
