@@ -188,6 +188,38 @@ func (a *API) AssignAuthenticatedUserToIssue(issue int) error {
 	return nil
 }
 
+// CloseIssue closes the specified issue.
+func (a *API) CloseIssue(issue int) error {
+	issueToClose := struct {
+		State string `json:"state"`
+	}{
+		State: "closed",
+	}
+	issueToCloseJSON, err := json.Marshal(&issueToClose)
+	if err != nil {
+		return err
+	}
+
+	client := http.DefaultClient
+	getRepoURI := fmt.Sprintf("%v/repos/%v/%v/issues/%v?access_token=%v", githubRoot, a.ownerName, a.RepoName, issue, a.githubAuthToken)
+	request, err := createDefaultRequest(http.MethodPatch, getRepoURI)
+	if err != nil {
+		return err
+	}
+
+	request.Body = ioutil.NopCloser(bytes.NewReader(issueToCloseJSON))
+	response, err := client.Do(request)
+	if err != nil {
+		return err
+	}
+
+	if response.StatusCode != http.StatusOK {
+		return fmt.Errorf("the close issue endpoint returned %v", response.StatusCode)
+	}
+
+	return nil
+}
+
 func createDefaultRequest(method, uri string) (*http.Request, error) {
 	request, err := http.NewRequest(method, uri, nil)
 	if err != nil {

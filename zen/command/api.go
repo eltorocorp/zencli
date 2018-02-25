@@ -15,6 +15,7 @@ type API struct {
 // The Actions that the command is able to execute.
 type Actions interface {
 	Help()
+	Close(issue int) error
 	Drop(issue int) error
 	List(backlog bool, login string) error
 	Move(issue int, pipeline string) error
@@ -52,7 +53,11 @@ func (c *API) Execute() error {
 	if !c.nextSymbol() {
 		return c.parserError()
 	}
-	if c.expectToken(DROP) &&
+	if c.expectToken(CLOSE) &&
+		c.nextSymbol() &&
+		c.expectCurrentSymbolInt(&issue) {
+		return c.actions.Close(issue)
+	} else if c.expectToken(DROP) &&
 		c.nextSymbol() &&
 		c.expectCurrentSymbolInt(&issue) {
 		return c.actions.Drop(issue)
@@ -93,7 +98,6 @@ func (c *API) Execute() error {
 		c.nextSymbol() &&
 		c.expectCurrentSymbolInt(&issue) {
 		return c.actions.PickUp(issue)
-	} else {
-		return c.parserError()
 	}
+	return c.parserError()
 }

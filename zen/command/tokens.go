@@ -3,6 +3,8 @@ package command
 type token string
 
 const (
+	// CLOSE token
+	CLOSE token = "close"
 	// HELP token
 	HELP token = "help"
 	// DROP token
@@ -23,4 +25,4 @@ const (
 	UP token = "up"
 )
 
-var tokens = []token{HELP, DROP, LIST, BACKLOG, ONLY, MOVE, TO, PICK, UP}
+var tokens = []token{CLOSE, HELP, DROP, LIST, BACKLOG, ONLY, MOVE, TO, PICK, UP}

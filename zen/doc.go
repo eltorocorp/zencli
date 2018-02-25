@@ -10,13 +10,14 @@ DESCRIPTION
     zen is a small utility for interacting with ZenHub boards through a simple command line interface.
 
 COMMANDS
-    drop <issue>                Removes you as an assignee on the specified issue.
-    list [parameters]           Lists all of the pipelines and issues for the current repository.
+    close <issue>                 Changes the status of the specified issue to closed.
+    drop <issue>                  Removes you as an assignee on the specified issue.
+    list [parameters]             Lists all of the pipelines and issues for the current repository.
         parameters:
-        [backlog]               The backlog pipeline is omitted from results unless "backlog" is supplied.
-        [only <login>|me]       The list of issues will be filtered to only include the specified github login.
-                                When this option is supplied, unassigned issues are still displayed.
-                                If "me" is supplied as the login, the current authenticated user's login is used.
+        [backlog]                 The backlog pipeline is omitted from results unless "backlog" is supplied.
+        [only <login>|me]         The list of issues will be filtered to only include the specified github login.
+                                  When this option is supplied, unassigned issues are still displayed.
+                                  If "me" is supplied as the login, the current authenticated user's login is used.
     move <issue> [to] <pipeline>  Moves the specified issue from its current pipeline to the specified pipeline.
-    pick up <issue>             Adds you as the assignee on the specified issue and removes any other assignees.
+    pick up <issue>               Adds you as the assignee on the specified issue and removes any other assignees.
 `
