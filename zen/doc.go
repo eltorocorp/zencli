@@ -16,6 +16,6 @@ COMMANDS
         [backlog]               The backlog pipeline is omitted from results unless "backlog" is supplied.
         [only <login>]          The list of issues will be filtered to only include the specified github login.
                                 When this option is supplied, unassigned issues are still displayed.
-    move <issue> to <pipeline>  Moves the specified issue from its current pipeline to the specified pipeline.
+    move <issue> [to] <pipeline>  Moves the specified issue from its current pipeline to the specified pipeline.
     pick up <issue>             Adds you as the assignee on the specified issue and removes any other assignees.
 `

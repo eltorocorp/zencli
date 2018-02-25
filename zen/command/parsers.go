@@ -18,6 +18,15 @@ func (c *API) nextSymbol() bool {
 	return true
 }
 
+func (c *API) previousSymbol() bool {
+	c.symbolIndex--
+	if c.symbolIndex < 0 {
+		return false
+	}
+	c.currentSymbol = c.args[c.symbolIndex]
+	return true
+}
+
 func (c *API) acceptToken(t token) bool {
 	if c.currentSymbol == string(t) {
 		return true

@@ -74,7 +74,10 @@ func (c *API) Execute() error {
 		c.nextSymbol() &&
 		c.expectCurrentSymbolInt(&issue) &&
 		c.nextSymbol() &&
-		c.expectToken(TO) {
+		c.acceptToken(TO) {
+		if c.currentSymbol != string(TO) {
+			c.previousSymbol()
+		}
 		pipelineName := []string{}
 		for c.nextSymbol() {
 			if c.expectCurrentSymbolString(&pipeline) {
