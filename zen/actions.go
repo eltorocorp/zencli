@@ -50,6 +50,14 @@ func (a *Actions) List(backlog bool, login string) error {
 		return err
 	}
 
+	if login == "me" {
+		user, err := a.githubAPI.GetAuthenticatedUser()
+		if err != nil {
+			return err
+		}
+		login = user.Login
+	}
+
 	fmt.Printf("\rOpen issues for %v\n", pr(a.githubAPI.RepoName+":", 80))
 	for _, pipeline := range pipelines.List {
 		if backlog == false && pipeline.Name == "Backlog" {
