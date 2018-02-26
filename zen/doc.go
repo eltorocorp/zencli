@@ -15,7 +15,7 @@ COMMANDS
     drop <issue>                     Removes you as an assignee on the specified issue.
     list [parameters]                Lists all of the pipelines and issues for the current repository.
         parameters:
-        [backlog]                    The backlog pipeline is omitted from results unless "backlog" is supplied.
+        [--backlog]                  The backlog pipeline is omitted from results unless "--backlog" is supplied.
         [only <login>|me]            The list of issues will be filtered to only include the specified github login.
                                      When this option is supplied, unassigned issues are still displayed.
                                      If "me" is supplied as the login, the current authenticated user's login is used.

@@ -18,7 +18,7 @@ const (
 	// LIST token
 	LIST token = "list"
 	// BACKLOG token
-	BACKLOG token = "backlog"
+	BACKLOG token = "--backlog"
 	//ONLY token
 	ONLY token = "only"
 	// MOVE token
