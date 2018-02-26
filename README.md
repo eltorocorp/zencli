@@ -5,6 +5,7 @@ A small utility for interacting with ZenHub boards through a simple command line
 
  - Awesome. Contributions are welcome!
  - Please fork and submit a pull request with any changes that you think would be useful.
+ - If your name is Ben, neither you nor anyone acting as your proxy are allowed to assign any issues to me regarding zencli. :)
 
 ## Setup
 
