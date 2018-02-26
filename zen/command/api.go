@@ -1,9 +1,5 @@
 package command
 
-import (
-	"strings"
-)
-
 // The API for the command
 type API struct {
 	args          []string
@@ -16,6 +12,7 @@ type API struct {
 type Actions interface {
 	Help()
 	Close(issue int) error
+	Create(title, pipeline string) error
 	Open(issue int) error
 	Drop(issue int) error
 	List(backlog bool, login string) error
@@ -42,6 +39,7 @@ func (c *API) Execute() error {
 		issue    int
 		pipeline string
 		login    string
+		title    string
 		backlog  bool
 	)
 
@@ -66,6 +64,14 @@ func (c *API) Execute() error {
 		c.nextSymbol() &&
 		c.expectCurrentSymbolInt(&issue) {
 		return c.actions.Drop(issue)
+	} else if c.expectToken(CREATE) &&
+		c.nextSymbol() &&
+		c.expectCurrentSymbolString(&title) &&
+		c.nextSymbol() &&
+		c.expectToken(AS) &&
+		c.nextSymbol() &&
+		c.expectCurrentSymbolString(&pipeline) {
+		return c.actions.Create(title, pipeline)
 	} else if c.expectToken(LIST) {
 		backlog = false
 		for c.nextSymbol() {
@@ -84,19 +90,11 @@ func (c *API) Execute() error {
 		c.nextSymbol() &&
 		c.expectCurrentSymbolInt(&issue) &&
 		c.nextSymbol() &&
-		c.acceptToken(TO) {
-		if c.currentSymbol != string(TO) {
-			c.previousSymbol()
+		c.ignoreToken(TO) {
+		if c.expectCurrentSymbolString(&pipeline) {
+			return c.actions.Move(issue, pipeline)
 		}
-		pipelineName := []string{}
-		for c.nextSymbol() {
-			if c.expectCurrentSymbolString(&pipeline) {
-				pipelineName = append(pipelineName, pipeline)
-			} else {
-				return c.parserError()
-			}
-		}
-		return c.actions.Move(issue, strings.Join(pipelineName, " "))
+		return c.parserError()
 	} else if c.expectToken(PICK) &&
 		c.nextSymbol() &&
 		c.expectToken(UP) &&

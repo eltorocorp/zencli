@@ -188,6 +188,47 @@ func (a *API) AssignAuthenticatedUserToIssue(issue int) error {
 	return nil
 }
 
+// CreateIssue creates a new issue and returns the issue number for the new issue.
+func (a *API) CreateIssue(title string) (int, error) {
+	client := http.DefaultClient
+	getRepoURI := fmt.Sprintf("%v/repos/%v/%v/issues?access_token=%v", githubRoot, a.ownerName, a.RepoName, a.githubAuthToken)
+	request, err := createDefaultRequest(http.MethodPost, getRepoURI)
+	if err != nil {
+		return 0, err
+	}
+
+	issueToCreate := struct {
+		Title string `json:"title"`
+	}{
+		Title: title,
+	}
+	issueToCreateJSON, err := json.Marshal(&issueToCreate)
+	if err != nil {
+		return 0, err
+	}
+	request.Body = ioutil.NopCloser(bytes.NewReader(issueToCreateJSON))
+	response, err := client.Do(request)
+	if err != nil {
+		return 0, err
+	}
+
+	if response.StatusCode != http.StatusCreated {
+		return 0, fmt.Errorf("the create issue endpoint returned %v", response.StatusCode)
+	}
+
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return 0, err
+	}
+
+	newIssue := new(Issue)
+	err = json.Unmarshal(body, newIssue)
+	if err != nil {
+		return 0, err
+	}
+	return newIssue.Number, nil
+}
+
 // CloseIssue closes the specified issue.
 func (a *API) CloseIssue(issue int) error {
 	issueToClose := struct {

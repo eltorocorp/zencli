@@ -27,8 +27,9 @@ func (c *API) previousSymbol() bool {
 	return true
 }
 
-func (c *API) acceptToken(t token) bool {
+func (c *API) ignoreToken(t token) bool {
 	if c.currentSymbol == string(t) {
+		c.nextSymbol()
 		return true
 	}
 	for _, token := range tokens {
@@ -36,6 +37,7 @@ func (c *API) acceptToken(t token) bool {
 			return false
 		}
 	}
+	c.nextSymbol()
 	return true
 }
 

@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/eltorocorp/zencli/zen/github"
 	"github.com/eltorocorp/zencli/zen/zenhub"
@@ -21,6 +20,42 @@ func NewActions(githubAPI *github.API, zenHubAPI *zenhub.API) *Actions {
 		githubAPI: githubAPI,
 		zenHubAPI: zenHubAPI,
 	}
+}
+
+// Create creates a new issue in the specified pipeline.
+func (a *Actions) Create(title, pipelineName string) error {
+	var err error
+	var pipelineID string
+
+	fmt.Printf("Creating new issue...\n")
+
+	// Since backlog is the default pipeline, we save a few seconds by not checking if it exists (since a move won't be necessary later)
+	if pipelineName != "backlog" {
+		pipelineID, err = a.zenHubAPI.GetPipelineID(pipelineName)
+		if err != nil {
+			return err
+		}
+	}
+
+	newIssueNumber, err := a.githubAPI.CreateIssue(title)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Issue %v created in the backlog.", newIssueNumber)
+	if pipelineName == "backlog" {
+		fmt.Println()
+		return nil
+	}
+
+	fmt.Printf(" Moving it to %v...\n", pipelineName)
+	err = a.zenHubAPI.MovePipeline(newIssueNumber, pipelineID)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("New issue (%v) has been created and moved to %v.\n", newIssueNumber, pipelineName)
+	return nil
 }
 
 // Drop unassigns the current user from the specified issue.
@@ -88,21 +123,9 @@ func (a *Actions) List(backlog bool, login string) error {
 // Move changes the pipeline for the specified issue.
 func (a *Actions) Move(issue int, pipelineName string) error {
 	fmt.Printf("Moving issue %v to %v...\n", issue, pipelineName)
-	pipelines, err := a.zenHubAPI.GetPipelines()
+	pipelineID, err := a.zenHubAPI.GetPipelineID(pipelineName)
 	if err != nil {
 		return err
-	}
-
-	var pipelineID string
-	for _, pipeline := range pipelines.List {
-		if strings.ToLower(pipeline.Name) == strings.ToLower(pipelineName) {
-			pipelineID = pipeline.ID
-			break
-		}
-	}
-
-	if pipelineID == "" {
-		return fmt.Errorf("no pipeline named '%v' exists for this board", pipelineName)
 	}
 
 	err = a.zenHubAPI.MovePipeline(issue, pipelineID)

@@ -3,6 +3,10 @@ package command
 type token string
 
 const (
+	// CREATE token
+	CREATE token = "create"
+	// AS token
+	AS token = "as"
 	// CLOSE token
 	CLOSE token = "close"
 	// OPEN token
@@ -27,4 +31,4 @@ const (
 	UP token = "up"
 )
 
-var tokens = []token{OPEN, CLOSE, HELP, DROP, LIST, BACKLOG, ONLY, MOVE, TO, PICK, UP}
+var tokens = []token{CREATE, AS, OPEN, CLOSE, HELP, DROP, LIST, BACKLOG, ONLY, MOVE, TO, PICK, UP}

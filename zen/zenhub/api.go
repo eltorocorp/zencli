@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/eltorocorp/zencli/zen/github"
 )
@@ -97,6 +98,28 @@ func (a *API) MovePipeline(issue int, pipelineID string) error {
 		return fmt.Errorf("the move issue endpoint returned %v", response.StatusCode)
 	}
 	return nil
+}
+
+// GetPipelineID returns the ZenHub ID for the specified pipeline name. If the specified pipeline
+// does not exist for the current board, this method will return an empty string and an error.
+func (a *API) GetPipelineID(pipelineName string) (string, error) {
+	pipelineID := ""
+	pipelines, err := a.GetPipelines()
+	if err != nil {
+		return "", err
+	}
+	for _, pipeline := range pipelines.List {
+		if strings.ToLower(pipeline.Name) == strings.ToLower(pipelineName) {
+			pipelineID = pipeline.ID
+			break
+		}
+	}
+
+	if pipelineID == "" {
+		return "", fmt.Errorf("pipeline '%v' does not exist for this board", pipelineName)
+	}
+
+	return pipelineID, nil
 }
 
 func (a *API) createDefaultRequest(method, uri string) (*http.Request, error) {

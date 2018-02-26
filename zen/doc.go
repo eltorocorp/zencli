@@ -11,8 +11,7 @@ DESCRIPTION
 
 COMMANDS
     close <issue>                    Changes the status of the specified issue to closed.
-    create "<title>" as <pipeline>   Creates a new issue in the specified pipeline.
-                                     The issue title must be surrounded by double quotes.
+    create <title> as <pipeline>     Creates a new issue in the specified pipeline.
     drop <issue>                     Removes you as an assignee on the specified issue.
     list [parameters]                Lists all of the pipelines and issues for the current repository.
         parameters:
@@ -33,11 +32,15 @@ EXAMPLES
 
         $ zen create "There's clearly a bug in this code" as prioritized
 
+    To create a new issue in the 'in progress' pipeline:
+
+        $ zen create "This is another issue." as "in progress"
+
     To list only only my issues:
 
         $ zen list only me
 
-    To move issue 999 to the 'in progress' pipeline:
+    To move issue 999 to the "in progress" pipeline:
 
-        $ zen move 999 to in progress
+        $ zen move 999 to "in progress"
 `
