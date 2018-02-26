@@ -21,7 +21,7 @@ COMMANDS
                                      If "me" is supplied as the login, the current authenticated user's login is used.
     move <issue> [to] <pipeline>     Moves the specified issue from its current pipeline to the specified pipeline.
     open <issue>                     Changes the status of the specified issue to open.
-    pick up <issue>                  Adds you as the assignee on the specified issue and removes any other assignees.
+    pick up <issue>                  Adds you as an assignee on the specified issue.
 
 EXAMPLES
     To close an issue number 123:

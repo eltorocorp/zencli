@@ -160,7 +160,7 @@ func (a *Actions) Open(issue int) error {
 	fmt.Printf("Openning issue %v...\n", issue)
 	err := a.githubAPI.OpenIssue(issue)
 	if err == nil {
-		fmt.Printf("Issue %v has been openned.\n", issue)
+		fmt.Printf("Issue %v has been opened.\n", issue)
 	}
 	return err
 }
